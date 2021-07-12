@@ -74,7 +74,7 @@ training = TimeSeriesDataSet(
         "avg_volume_by_sku",
     ],
     target_normalizer=GroupNormalizer(
-        groups=["agency", "sku"], transformation="softplus", center=False
+        groups=["agency", "sku"], transformation="softplus", center=True
     ),  # use softplus with beta=1.0 and normalize by group
     add_relative_time_idx=True,
     add_target_scales=True,
@@ -83,7 +83,7 @@ training = TimeSeriesDataSet(
 
 
 validation = TimeSeriesDataSet.from_dataset(training, data, predict=True, stop_randomization=True)
-batch_size = 64
+batch_size = 32
 train_dataloader = training.to_dataloader(train=True, batch_size=batch_size, num_workers=0)
 val_dataloader = validation.to_dataloader(train=False, batch_size=batch_size, num_workers=0)
 
@@ -94,7 +94,7 @@ validation.save("validation.pkl")
 
 early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=1e-4, patience=10, verbose=False, mode="min")
 lr_logger = LearningRateMonitor()
-logger = TensorBoardLogger(log_graph=True)
+logger = TensorBoardLogger(log_graph=True, save_dir='/home/jeroen/out/pf_tblogger/')
 
 trainer = pl.Trainer(
     max_epochs=100,

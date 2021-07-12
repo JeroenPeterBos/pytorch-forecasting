@@ -151,7 +151,7 @@ class TimeSeriesDataSet(Dataset):
         variable_groups: Dict[str, List[int]] = {},
         constant_fill_strategy: Dict[str, Union[str, float, int, bool]] = {},
         allow_missing_timesteps: bool = False,
-        lags: Dict[str, List[int]] = {},
+        lags=None,
         add_relative_time_idx: bool = False,
         add_target_scales: bool = False,
         add_encoder_length: Union[bool, str] = "auto",
@@ -286,6 +286,8 @@ class TimeSeriesDataSet(Dataset):
                 prediction samples and everthing previous up to ``max_encoder_length`` samples as encoder samples.
         """
         super().__init__()
+        if lags is None:
+            lags = {}
         self.max_encoder_length = max_encoder_length
         assert isinstance(self.max_encoder_length, int), "max encoder length must be integer"
         if min_encoder_length is None:
